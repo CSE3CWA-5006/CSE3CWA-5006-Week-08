@@ -1,4 +1,16 @@
 # CarManager
+A self-contained, offline web application built with
+**ASP.NET Core 8 (Razor Pages)** and **SQLite**.
+It ships with realistic demo data and needs no internet connection, no CDNs and no
+external services.
+
+> **Copyright (c) 2026 Dr Shuo Ding · <shuoding@outlook.com>**
+> This software belongs to the author and is released under the
+> **GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)** — see [`LICENSE`](LICENSE).
+> It is **free to use**. Any **copy, modification, or distribution** (including hosted/network
+> use) **must retain the author copyright notice** and remain under the AGPL.
+
+---
 
 This Week 8 teaching project demonstrates an ASP.NET Core Razor Pages CRUD app with a local SQLite database and simple API endpoints.
 
