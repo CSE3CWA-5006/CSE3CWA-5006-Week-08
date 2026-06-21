@@ -1,0 +1,37 @@
+@page
+@*
+   ProjectHub  -  Copyright (c) 2026 Dr Shuo Ding <shuoding@outlook.com>
+   Licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+   Free to use. Any copy, modification, or distribution must retain this author
+   copyright notice and remain under the AGPL. See the LICENSE file for full terms.
+*@
+@model CreateModel
+@{
+    ViewData["Title"] = "New project"; ViewData["Nav"] = "projects";
+    var icons = new[] { "📁","🌐","📱","📣","🚀","🧪","📊","🛠️","🎯","💡","🗂️","🏗️" };
+}
+
+<div class="page-head"><h1>New project</h1></div>
+
+<form method="post" class="form-card">
+    <div asp-validation-summary="All" class="validation"></div>
+    <label class="field"><span>Project name</span>
+        <input asp-for="Project.Name" placeholder="e.g. Website Redesign" /></label>
+    <label class="field"><span>Description</span>
+        <textarea asp-for="Project.Description" rows="3" placeholder="What is this project about?"></textarea></label>
+    <div class="field-row">
+        <label class="field"><span>Icon</span>
+            <select asp-for="Project.Icon">
+                @foreach (var ic in icons) { <option value="@ic">@ic</option> }
+            </select></label>
+        <label class="field field-color"><span>Colour</span><input asp-for="Project.ColorHex" type="color" /></label>
+    </div>
+    <div class="field-row">
+        <label class="field"><span>Start date</span><input asp-for="Project.StartDate" type="date" /></label>
+        <label class="field"><span>Target end date</span><input asp-for="Project.EndDate" type="date" /></label>
+    </div>
+    <div class="form-actions">
+        <a class="btn" asp-page="Index">Cancel</a>
+        <button class="btn btn-primary" type="submit">Create &amp; add tasks &rarr;</button>
+    </div>
+</form>

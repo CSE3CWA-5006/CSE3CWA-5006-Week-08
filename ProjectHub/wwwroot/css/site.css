@@ -1,0 +1,569 @@
+/*
+   ProjectHub  -  Copyright (c) 2026 Dr Shuo Ding <shuoding@outlook.com>
+   Licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+   Free to use. Any copy, modification, or distribution must retain this author
+   copyright notice and remain under the AGPL. See the LICENSE file for full terms.
+*/
+
+/* ===========================================================================
+   ProjectHub - modern, translucent take on a Microsoft Teams / Fluent theme
+   =========================================================================== */
+:root{
+  --brand:#6264A7; --brand-2:#7A5AF8; --brand-3:#3FB6E0; --brand-dark:#43355f;
+  --ink:#1f1d2b; --ink-2:#5b5870; --line:rgba(98,100,167,.16); --line-2:rgba(98,100,167,.10);
+  --surface:rgba(255,255,255,.74); --surface-solid:#ffffff;
+  --s-notstarted:#8a8896; --s-inprogress:#2b7fd4; --s-completed:#17996b;
+  --p-low:#8a8896; --p-medium:#6264a7; --p-high:#e07a1f; --p-urgent:#e0397a;
+  --u-overdue:#e0397a; --u-soon:#e07a1f;
+  --radius:14px; --radius-sm:10px;
+  --shadow:0 8px 24px rgba(70,60,120,.10),0 2px 6px rgba(70,60,120,.06);
+  --shadow-sm:0 2px 8px rgba(70,60,120,.08);
+  --glass:saturate(150%) blur(12px);
+  --maxw:1280px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--ink);font-size:14px;line-height:1.45;
+  background:
+    radial-gradient(1200px 600px at 110% -10%,rgba(122,90,248,.18),transparent 60%),
+    radial-gradient(1000px 600px at -10% 0%,rgba(63,182,224,.16),transparent 55%),
+    linear-gradient(160deg,#f4f3fb 0%,#eef5fb 60%,#f6f0fb 100%);
+  background-attachment:fixed;min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+h1{font-size:20px;margin:0}
+.hidden{display:none!important}
+.muted{color:var(--ink-2)}
+.empty{color:var(--ink-2);padding:18px}
+
+/* App shell */
+.app{display:flex;min-height:100vh}
+.rail{width:74px;color:#fff;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:14px;
+  position:sticky;top:0;height:100vh;
+  background:linear-gradient(180deg,#6f5bd6 0%,#5b4fb0 45%,#473f86 100%);box-shadow:4px 0 20px rgba(70,60,120,.18)}
+.rail-logo{width:42px;height:42px;border-radius:13px;background:rgba(255,255,255,.18);backdrop-filter:blur(4px);
+  display:grid;place-items:center;font-weight:800;margin-bottom:12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.rail-item{width:62px;padding:9px 0;border-radius:12px;text-align:center;font-size:11px;opacity:.9;color:#fff;transition:.15s}
+.rail-item .rail-glyph{display:block;font-size:20px;line-height:1.1}
+.rail-item:hover{background:rgba(255,255,255,.14);opacity:1}
+.rail-item.active{background:rgba(255,255,255,.22);opacity:1;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{height:56px;display:flex;align-items:center;gap:18px;padding:0 24px;position:sticky;top:0;z-index:20;
+  background:rgba(255,255,255,.6);backdrop-filter:var(--glass);border-bottom:1px solid var(--line)}
+.topbar-title{font-weight:700;font-size:15px;letter-spacing:.2px}
+.topbar-search{margin-left:auto}
+.topbar-search input{width:260px;max-width:36vw;height:34px;border:1px solid var(--line);border-radius:18px;padding:0 14px;
+  background:rgba(255,255,255,.7);font-size:13px}
+.topbar-search input:focus{outline:2px solid var(--brand-2);background:#fff}
+.content{padding:24px;flex:1;max-width:var(--maxw);width:100%;margin:0 auto}
+.app-footer{max-width:var(--maxw);width:100%;margin:0 auto;padding:14px 24px 26px;color:var(--ink-2);
+  font-size:11.5px;text-align:center;opacity:.8}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border:1px solid var(--line);
+  background:rgba(255,255,255,.8);color:var(--ink);border-radius:9px;cursor:pointer;font-size:13px;font-weight:600;
+  font-family:inherit;transition:.15s;backdrop-filter:blur(4px)}
+.btn:hover{background:#fff;box-shadow:var(--shadow-sm)}
+.btn-primary{background:linear-gradient(135deg,var(--brand-2),var(--brand));border-color:transparent;color:#fff;
+  box-shadow:0 6px 16px rgba(122,90,248,.32)}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-danger{background:linear-gradient(135deg,#f0568f,#d6306f);border-color:transparent;color:#fff;
+  box-shadow:0 6px 16px rgba(224,57,122,.30)}
+.btn-sm{height:28px;padding:0 11px;font-size:12px;border-radius:8px}
+.btn-ghost{border-color:transparent;background:transparent;box-shadow:none}
+.btn-ghost:hover{background:rgba(98,100,167,.10)}
+.icon-btn{border:none;background:none;font-size:20px;cursor:pointer;color:var(--ink-2);line-height:1}
+.linkbtn{border:none;background:none;color:var(--brand-2);cursor:pointer;font:inherit;padding:0;font-weight:600}
+
+/* Page heads */
+.page-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.section-title{margin:0 0 10px;font-size:15px}
+.mini-title{margin:0 0 10px;font-size:12px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+
+/* Glass card */
+.card{background:var(--surface);backdrop-filter:var(--glass);border:1px solid rgba(255,255,255,.6);
+  border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.card.attention{position:relative;overflow:hidden}
+.card.attention::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,var(--u-overdue),var(--u-soon))}
+.card.attention{margin-bottom:20px;padding-left:22px}
+
+/* KPI cards (compact, clickable, tinted glass) */
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+.kpi{flex:0 0 184px;border:1px solid rgba(255,255,255,.6);border-radius:var(--radius);padding:14px 16px;
+  box-shadow:var(--shadow);cursor:pointer;text-align:left;backdrop-filter:var(--glass);transition:.15s;position:relative}
+.kpi:hover{transform:translateY(-2px)}
+.kpi.active{outline:2px solid var(--brand-2);outline-offset:-2px}
+.kpi-num{font-size:26px;font-weight:800;letter-spacing:.5px}
+.kpi-label{color:var(--ink-2);font-size:12px;font-weight:600}
+.tint-active{background:linear-gradient(135deg,rgba(122,90,248,.16),rgba(98,100,167,.10))}
+.tint-active .kpi-num{color:#5b3fd0}
+.tint-overdue{background:linear-gradient(135deg,rgba(224,57,122,.16),rgba(224,122,31,.10))}
+.tint-overdue .kpi-num{color:var(--u-overdue)}
+.tint-done{background:linear-gradient(135deg,rgba(23,153,107,.16),rgba(63,182,224,.10))}
+.tint-done .kpi-num{color:var(--s-completed)}
+.tint-proj{background:linear-gradient(135deg,rgba(43,127,212,.16),rgba(63,182,224,.10))}
+.tint-proj .kpi-num{color:var(--s-inprogress)}
+
+/* Attention / summary rows */
+.attn-row{display:flex;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid var(--line-2);border-radius:8px}
+.attn-row:last-child{border-bottom:none}
+.attn-row:hover{background:rgba(122,90,248,.06)}
+.attn-title{font-weight:600;flex:1}
+.attn-meta{color:var(--ink-2);font-size:12px}
+
+/* Status pills */
+.status-pill{font-size:11px;font-weight:700;padding:2px 10px;border-radius:11px;white-space:nowrap}
+.st-0{background:rgba(138,136,150,.16);color:#6c6a78}
+.st-1{background:rgba(43,127,212,.16);color:var(--s-inprogress)}
+.st-2{background:rgba(23,153,107,.18);color:var(--s-completed)}
+.proj-0{background:rgba(122,90,248,.16);color:#5b3fd0}
+.proj-1{background:rgba(224,168,31,.18);color:#9a6a00}
+.proj-2{background:rgba(23,153,107,.18);color:var(--s-completed)}
+
+/* Priority chips */
+.prio{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;color:#fff;white-space:nowrap}
+.p-low{background:var(--p-low)}.p-medium{background:var(--p-medium)}.p-high{background:var(--p-high)}.p-urgent{background:var(--p-urgent)}
+
+/* Due flag */
+.due-flag{font-size:11px;color:var(--ink-2)}
+.due-flag.over{color:var(--u-overdue);font-weight:700}
+.due-flag.soon{color:var(--u-soon);font-weight:700}
+
+/* Avatars */
+.avatar{width:26px;height:26px;border-radius:50%;color:#fff;font-size:11px;font-weight:700;display:inline-grid;
+  place-items:center;box-shadow:0 2px 6px rgba(70,60,120,.18)}
+.avatar.sm{width:22px;height:22px;font-size:10px;vertical-align:middle}
+.avatar.lg{width:42px;height:42px;font-size:15px}
+
+/* Progress */
+.progress{height:7px;background:rgba(98,100,167,.14);border-radius:5px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--brand-2),var(--brand-3))}
+
+/* Project grid */
+.project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.project-card{background:var(--surface);backdrop-filter:var(--glass);border:1px solid rgba(255,255,255,.6);
+  border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);display:block;transition:.15s}
+.project-card:hover{transform:translateY(-3px)}
+.project-card-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none}
+.dot-lg{width:14px;height:14px}
+.project-name{font-weight:700;flex:1}
+.project-desc{color:var(--ink-2);font-size:12.5px;min-height:34px;margin:0 0 12px}
+.project-meta{display:flex;justify-content:space-between;color:var(--ink-2);font-size:12px;margin-top:8px}
+
+/* Workspace header */
+.proj-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}
+.proj-head-main{display:flex;gap:12px;align-items:flex-start}
+.proj-head h1{display:flex;align-items:center;gap:10px}
+.proj-sub{color:var(--ink-2);font-size:13px;display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
+.proj-head-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* View tabs */
+.view-tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.tab{border:none;background:none;padding:9px 16px;font-size:14px;font-weight:600;color:var(--ink-2);cursor:pointer;
+  border-bottom:2px solid transparent;font-family:inherit}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--brand-2);border-bottom-color:var(--brand-2)}
+
+/* Board toolbar + group by */
+.board-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.group-by{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.group-by select{height:32px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-family:inherit;
+  font-size:13px;background:rgba(255,255,255,.8);font-weight:600;color:var(--ink)}
+.group-by select:focus{outline:2px solid var(--brand-2)}
+
+/* Board - narrow translucent columns */
+.board{display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;align-items:flex-start}
+.board-col{flex:0 0 290px;width:290px;border-radius:var(--radius);padding:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.30));backdrop-filter:var(--glass);
+  border:1px solid rgba(255,255,255,.55)}
+.col-head{display:flex;justify-content:space-between;align-items:center;padding:4px 6px 12px}
+.col-title{font-weight:700}
+.col-count{background:rgba(255,255,255,.8);border-radius:11px;padding:0 9px;font-size:12px;color:var(--ink-2);font-weight:700}
+.col-body{min-height:24px;display:flex;flex-direction:column;gap:10px}
+
+.task-card{background:var(--surface-solid);border:1px solid var(--line);border-radius:var(--radius-sm);padding:11px;
+  box-shadow:var(--shadow-sm);cursor:pointer;transition:.12s}
+.task-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.task-card.dragging{opacity:.5}
+.tc-top{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.tc-top .milestone{margin-left:auto;color:var(--brand-2)}
+.tc-title{font-weight:600;margin-bottom:9px;font-size:13.5px}
+.tc-progress{height:5px;background:rgba(98,100,167,.14);border-radius:3px;overflow:hidden;margin-bottom:9px}
+.tc-progress .bar{height:100%;background:linear-gradient(90deg,var(--brand-2),var(--brand-3))}
+.tc-bottom{display:flex;align-items:center;justify-content:space-between}
+.tc-bottom .who{display:flex;align-items:center;gap:6px}
+.notes-c{font-size:11px;color:var(--ink-2)}
+.quick-add{margin-top:10px}
+.quick-add input{width:100%;height:34px;border:1px dashed var(--line);background:rgba(255,255,255,.6);border-radius:9px;
+  padding:0 11px;font-family:inherit;font-size:13px}
+.quick-add input:focus{outline:2px solid var(--brand-2);border-style:solid;background:#fff}
+
+/* Empty state */
+.empty-state{background:var(--surface);backdrop-filter:var(--glass);border:1px dashed var(--line);
+  border-radius:var(--radius);padding:50px 24px;text-align:center;box-shadow:var(--shadow)}
+.empty-state h3{margin:0 0 6px}
+.empty-state p{color:var(--ink-2);margin:0 0 16px}
+
+/* Tables */
+.table{width:100%;border-collapse:collapse;background:var(--surface);backdrop-filter:var(--glass);
+  border:1px solid rgba(255,255,255,.6);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.table th{text-align:left;padding:11px 14px;font-size:12px;color:var(--ink-2);background:rgba(122,90,248,.06);
+  border-bottom:1px solid var(--line);cursor:pointer;user-select:none;font-weight:700}
+.table th:hover{color:var(--ink)}
+.table td{padding:10px 14px;border-bottom:1px solid var(--line-2);vertical-align:middle}
+.table tr:hover td{background:rgba(122,90,248,.05)}
+.row-actions{display:flex;gap:6px;justify-content:flex-end}
+.cell-task{display:flex;align-items:center;gap:6px;font-weight:600}
+
+/* Forms */
+.form-card{background:var(--surface);backdrop-filter:var(--glass);border:1px solid rgba(255,255,255,.6);
+  border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);max-width:620px}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:15px}
+.field>span{font-size:12px;font-weight:700;color:var(--ink-2)}
+.field input,.field textarea,.field select{border:1px solid var(--line);border-radius:9px;padding:9px 11px;
+  font-family:inherit;font-size:13px;background:rgba(255,255,255,.85)}
+.field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--brand-2);background:#fff}
+.field-row{display:flex;gap:12px}.field-row .field{flex:1}
+.field-color input{height:40px;padding:2px}
+.check{display:flex;align-items:center;gap:8px;margin:8px 0 15px;font-size:13px}
+.form-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px}
+.validation{color:var(--u-overdue);font-size:13px;margin-bottom:10px}
+.validation ul{margin:0;padding-left:18px}
+.banner-ok{background:linear-gradient(135deg,rgba(23,153,107,.16),rgba(63,182,224,.10));border:1px solid rgba(23,153,107,.3);
+  color:#0b6b4a;border-radius:10px;padding:11px 13px;margin-bottom:16px;font-size:13px}
+
+/* Members */
+.member-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line-2)}
+.member-row:hover{background:rgba(122,90,248,.05)}
+.member-name{font-weight:700}
+.member-email{color:var(--ink-2);font-size:12px}
+.role-pill{font-size:11px;font-weight:700;padding:2px 10px;border-radius:11px;background:rgba(98,100,167,.14);color:var(--ink-2)}
+.role-0{background:rgba(122,90,248,.16);color:#5b3fd0}.role-1{background:rgba(43,127,212,.16);color:var(--s-inprogress)}
+.role-2{background:rgba(138,136,150,.16);color:#6c6a78}
+
+/* Slide-in panel */
+.panel-scrim{position:fixed;inset:0;background:rgba(40,30,80,.32);backdrop-filter:blur(2px);z-index:40}
+.task-panel{position:fixed;top:0;right:0;width:430px;max-width:92vw;height:100vh;background:rgba(255,255,255,.92);
+  backdrop-filter:var(--glass);border-left:1px solid rgba(255,255,255,.6);box-shadow:-12px 0 40px rgba(70,60,120,.20);
+  z-index:50;display:flex;flex-direction:column}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+.panel-body{padding:18px;overflow-y:auto}
+.panel-actions{display:flex;justify-content:space-between;margin-top:6px}
+.task-panel hr{border:none;border-top:1px solid var(--line-2);margin:18px 0}
+.notes-list{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.note{background:rgba(122,90,248,.06);border:1px solid var(--line-2);border-radius:10px;padding:9px 11px}
+.note-meta{display:flex;gap:8px;font-size:11px;color:var(--ink-2);margin-bottom:2px}
+.note-body{font-size:13px;white-space:pre-wrap}
+.note-form{display:flex;flex-direction:column;gap:8px}
+.note-form textarea{border:1px solid var(--line);border-radius:9px;padding:9px;font-family:inherit;font-size:13px}
+
+/* Confirm modal */
+.modal-scrim{position:fixed;inset:0;background:rgba(40,30,80,.36);backdrop-filter:blur(3px);z-index:60;display:grid;place-items:center}
+.modal{background:#fff;border-radius:16px;padding:24px;width:390px;max-width:92vw;box-shadow:0 20px 60px rgba(40,30,80,.30)}
+.modal h3{margin:0 0 8px}
+.modal p{color:var(--ink-2);margin:0 0 18px}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px}
+
+/* Gantt */
+.gantt-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.zoom{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:rgba(255,255,255,.7)}
+.zoom button{border:none;background:transparent;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink-2);font-family:inherit}
+.zoom button.active{background:linear-gradient(135deg,var(--brand-2),var(--brand));color:#fff}
+.gantt{border:1px solid rgba(255,255,255,.6);border-radius:var(--radius);background:var(--surface);
+  backdrop-filter:var(--glass);overflow:hidden;box-shadow:var(--shadow)}
+.g-scroll{overflow-x:auto}
+.g-headrow{display:flex;border-bottom:1px solid var(--line);background:rgba(122,90,248,.06);position:sticky;top:0}
+.g-corner{width:210px;min-width:210px;border-right:1px solid var(--line)}
+.g-header{position:relative;height:42px}
+.g-tick{position:absolute;top:0;height:42px;border-right:1px solid var(--line-2);font-size:10px;color:var(--ink-2)}
+.g-tick.weekend{background:rgba(98,100,167,.06)}
+.g-tnum{position:absolute;bottom:4px;left:0;right:0;text-align:center}
+.g-tlabel{position:absolute;top:4px;left:4px;font-weight:700;color:#5b3fd0;white-space:nowrap;font-size:10px}
+.g-row{display:flex;border-bottom:1px solid var(--line-2);height:40px}
+.g-label{width:210px;min-width:210px;padding:0 12px;display:flex;align-items:center;border-right:1px solid var(--line);
+  font-size:13px;font-weight:600;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.g-track{position:relative;height:40px}
+.g-bar{position:absolute;top:9px;height:22px;border-radius:6px;cursor:grab;overflow:hidden;display:flex;align-items:center;
+  min-width:6px;box-shadow:var(--shadow-sm)}
+.g-bar.dragging{cursor:grabbing;opacity:.85}
+.g-bar.s0{background:linear-gradient(135deg,#b9b6cc,#a7a3c2)}
+.g-bar.s1{background:linear-gradient(135deg,var(--brand-2),var(--brand-3))}
+.g-bar.s2{background:linear-gradient(135deg,#19b07a,#3fb6e0)}
+.g-fill{position:absolute;left:0;top:0;height:100%;background:rgba(0,0,0,.16)}
+.g-bartext{position:relative;color:#fff;font-size:10px;font-weight:700;padding:0 6px;z-index:1;white-space:nowrap}
+.g-milestone{position:absolute;top:9px;width:18px;height:18px;background:linear-gradient(135deg,#7A5AF8,#43355f);
+  transform:rotate(45deg);border-radius:4px;box-shadow:var(--shadow-sm)}
+
+@media(max-width:900px){.kpi{flex-basis:calc(50% - 7px)}}
+
+/* ===========================================================================
+   v3 overrides: +1pt fonts, project-status colours (incl. Delayed),
+   reason pills, project icons, compact members, per-column add button
+   =========================================================================== */
+body{font-size:15px}
+h1{font-size:22px}
+.topbar-title{font-size:16px}
+.btn{font-size:14px}
+.btn-sm{font-size:13px}
+.tab{font-size:15px}
+.tc-title{font-size:14.5px}
+.kpi-num{font-size:28px}
+.kpi-label{font-size:13px}
+.project-name{font-size:15.5px}
+.attn-title{font-size:15px}
+.field input,.field textarea,.field select{font-size:14px}
+.table td,.table th{font-size:13.5px}
+.status-pill{font-size:12px}
+.prio{font-size:11.5px}
+.due-flag{font-size:12px}
+.member-email{font-size:13px}
+.mini-title{font-size:12.5px}
+
+/* Project status colours: 0 Active, 1 On track, 2 Delayed, 3 Completed */
+.proj-0{background:rgba(122,90,248,.16);color:#5b3fd0}
+.proj-1{background:rgba(23,153,107,.18);color:#0f7a55}
+.proj-2{background:rgba(224,57,122,.16);color:#c22f6a}
+.proj-3{background:rgba(43,127,212,.16);color:#2b7fd4}
+
+/* Reason pills (Attention needed) */
+.rs-over{background:rgba(224,57,122,.16);color:#c22f6a}
+.rs-soon{background:rgba(224,122,31,.16);color:#b35e10}
+
+/* Project icon badge */
+.proj-icon{width:34px;height:34px;border-radius:10px;display:inline-grid;place-items:center;font-size:18px;
+  background:rgba(122,90,248,.10);border:1px solid rgba(122,90,248,.18);flex:none}
+.proj-icon.lg{width:44px;height:44px;font-size:24px;border-radius:13px}
+
+/* Compact team rows */
+.member-row{padding:9px 14px;gap:11px}
+.member-row .avatar.lg{width:34px;height:34px;font-size:13px}
+
+/* Member avatars stack (project members, compact) */
+.member-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 16px}
+.member-stack{display:flex;align-items:center}
+.member-stack .avatar{margin-left:-6px;border:2px solid #fff}
+.member-stack .avatar:first-child{margin-left:0}
+.member-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.7);border:1px solid var(--line);
+  border-radius:20px;padding:3px 4px 3px 4px}
+.member-chip .x{border:none;background:none;color:var(--ink-2);cursor:pointer;font-size:14px;line-height:1;padding:0 4px}
+.member-chip .x:hover{color:var(--u-overdue)}
+.add-member{display:inline-flex;align-items:center;gap:6px}
+.add-member select{height:30px;border:1px solid var(--line);border-radius:8px;padding:0 8px;font-size:13px;background:rgba(255,255,255,.8)}
+
+/* Per-column add-task button (replaces the inline input) */
+.col-add{width:100%;margin-top:10px;height:36px;border:1px dashed var(--line);background:rgba(255,255,255,.55);
+  border-radius:9px;color:var(--ink-2);font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit}
+.col-add:hover{background:#fff;color:var(--ink);border-color:var(--brand-2)}
+
+/* Grouped attention (per project) */
+.attn-proj{display:flex;align-items:center;gap:10px;padding:10px 6px;border-bottom:1px solid var(--line-2)}
+.attn-proj:last-child{border-bottom:none}
+.attn-proj:hover{background:rgba(122,90,248,.06)}
+.attn-proj .nm{font-weight:600;flex:1}
+.count-pill{font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:11px}
+.count-pill.over{background:rgba(224,57,122,.16);color:#c22f6a}
+.count-pill.soon{background:rgba(224,122,31,.16);color:#b35e10}
+
+/* ===========================================================================
+   v4: back button, KPI hover lists, multi-assignee, member profiles, Delayed
+   status colours, gantt gridlines/bars, edit pencil, delete danger zone
+   =========================================================================== */
+.backbtn{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:rgba(255,255,255,.7);
+  cursor:pointer;font-size:16px;line-height:1;color:var(--ink-2);margin-right:4px}
+.backbtn:hover{background:#fff;color:var(--ink)}
+
+/* KPI hover popover (which projects are in this card) */
+.kpi{overflow:visible}
+.kpi-pop{position:absolute;top:calc(100% + 8px);left:0;min-width:200px;max-width:280px;z-index:30;display:none;
+  background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:10px 12px}
+.kpi:hover .kpi-pop{display:block}
+.kpi-pop b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-2);margin-bottom:6px}
+.kpi-pop span{display:block;font-size:13px;padding:2px 0;border-top:1px solid var(--line-2)}
+.kpi-pop span:first-of-type{border-top:none}
+
+/* Status colours: 0 not started, 1 in progress, 2 delayed, 3 completed */
+.st-0{background:rgba(138,136,150,.16);color:#6c6a78}
+.st-1{background:rgba(43,127,212,.16);color:#2b7fd4}
+.st-2{background:rgba(224,57,122,.16);color:#c22f6a}
+.st-3{background:rgba(23,153,107,.18);color:#0f7a55}
+/* Project status: 0 not started, 1 on track, 2 delayed, 3 completed */
+.proj-0{background:rgba(138,136,150,.16);color:#6c6a78}
+.proj-1{background:rgba(23,153,107,.18);color:#0f7a55}
+.proj-2{background:rgba(224,57,122,.16);color:#c22f6a}
+.proj-3{background:rgba(43,127,212,.16);color:#2b7fd4}
+
+/* Gantt bars by status + faint gridlines come inline from JS */
+.g-bar.s0{background:linear-gradient(135deg,#b9b6cc,#a7a3c2)}
+.g-bar.s1{background:linear-gradient(135deg,var(--brand-2),var(--brand-3))}
+.g-bar.s2{background:linear-gradient(135deg,#f0568f,#d6306f)}
+.g-bar.s3{background:linear-gradient(135deg,#19b07a,#3fb6e0)}
+
+/* avatar overlap + overflow chip */
+.member-stack .avatar.more{background:#cfd3df;color:#5b5870}
+
+/* multi-assignee checkbox list */
+.assignee-list{display:flex;flex-direction:column;gap:2px;max-height:170px;overflow:auto;border:1px solid var(--line);
+  border-radius:9px;padding:6px;background:rgba(255,255,255,.7)}
+.achk{display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:7px;font-size:13.5px;cursor:pointer}
+.achk:hover{background:rgba(122,90,248,.08)}
+.achk input{margin:0}
+
+/* edit pencil near project name */
+.edit-pencil{font-size:15px;color:var(--ink-2);margin-left:6px;text-decoration:none;vertical-align:middle}
+.edit-pencil:hover{color:var(--brand-2)}
+
+/* read-only project member bar */
+.member-bar-label{font-size:12px;font-weight:700;color:var(--ink-2)}
+.member-hint{font-size:11.5px;color:var(--dim)}
+
+/* delete danger zone (kept away from everyday actions) */
+.danger-zone{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:620px;margin-top:22px;
+  padding:16px 18px;border:1px solid rgba(224,57,122,.35);border-radius:var(--radius);background:rgba(224,57,122,.05)}
+.danger-zone strong{color:#c22f6a}
+.danger-zone p{margin:2px 0 0;font-size:12.5px}
+
+/* add-task two-column layout */
+.add-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media(max-width:900px){.add-layout{grid-template-columns:1fr}}
+
+/* member profile expand */
+.mprofile{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:6px 2px}
+.mprofile .k{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--ink-2);font-weight:700;margin-right:6px}
+.mprofile-info div{padding:3px 0;font-size:13.5px}
+.mprofile-projects .proj-link{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:13.5px;border-top:1px solid var(--line-2)}
+.mprofile-projects .proj-link:hover{color:var(--brand-2)}
+.mrow{cursor:pointer}
+@media(max-width:760px){.mprofile{grid-template-columns:1fr}}
+
+/* ===========================================================================
+   v5: panel z-order, fit attention card, smaller avatars, flowing home bg,
+   hover hint, archive rows, dependency badge, matched headings, search
+   =========================================================================== */
+/* task panel & modals always on top of cards/popovers */
+.panel-scrim{z-index:1200}
+.task-panel{z-index:1300}
+.modal-scrim{z-index:1400}
+
+/* extra-small avatar for dense rows */
+.avatar.xs{width:20px;height:20px;font-size:9.5px;border-radius:6px;display:inline-grid;place-items:center;color:#fff;font-weight:700}
+
+/* Attention card sizes to its content (not full width) */
+.card.attention.fit{width:fit-content;max-width:760px;min-width:320px}
+.kpis{margin-bottom:30px}
+
+/* compact project team chips */
+.member-bar.compact{margin-bottom:14px}
+.member-bar.compact .member-chip{font-size:12px;padding:2px 9px 2px 3px;gap:5px}
+
+/* dependency chain badge on cards */
+.dep-c{font-size:11px;color:var(--ink-2);margin-right:2px}
+
+/* archive view */
+.arch-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 12px}
+.arch-row{display:flex;align-items:center;gap:12px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;
+  background:rgba(255,255,255,.72);margin-bottom:8px}
+.arch-row .attn-title{flex:1;font-weight:600}
+
+/* section headings match the page H1 */
+.section-title{font-size:22px;font-weight:800;margin:24px 0 12px}
+
+/* Team: hover hint bubble over a member name */
+.mname{position:relative;display:inline-flex;align-items:center;gap:8px}
+.hint-bubble{position:absolute;left:40px;top:-14px;display:none;background:rgba(40,38,60,.82);color:#fff;
+  font-size:11px;padding:3px 9px;border-radius:9px;white-space:nowrap;backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);box-shadow:var(--shadow);z-index:6}
+.mrow:hover .hint-bubble{display:block}
+
+/* Flowing, translucent, "tech" background — homepage only */
+body.home-bg{
+  background:
+    radial-gradient(circle at 12% 18%, rgba(122,90,248,.18), transparent 40%),
+    radial-gradient(circle at 88% 12%, rgba(15,108,189,.15), transparent 42%),
+    radial-gradient(circle at 78% 82%, rgba(194,57,179,.13), transparent 44%),
+    radial-gradient(circle at 20% 88%, rgba(0,130,114,.12), transparent 42%),
+    linear-gradient(135deg,#f6f7fb,#eef0f8);
+  background-attachment:fixed;
+  animation:phflow 24s ease-in-out infinite alternate;
+}
+@keyframes phflow{
+  0%   {background-size:120% 120%,120% 120%,120% 120%,120% 120%,100% 100%;}
+  100% {background-size:142% 142%,138% 138%,136% 136%,140% 140%,100% 100%;}
+}
+@media (prefers-reduced-motion: reduce){ body.home-bg{animation:none} }
+
+/* ===========================================================================
+   v6: slow tooltip fade, KPI popover above attention, project-level home
+   attention (wider, smaller text)
+   =========================================================================== */
+/* "click to expand" fades in gently (display:none can't transition) */
+.hint-bubble{display:block;visibility:hidden;opacity:0;transform:translateY(4px);
+  transition:opacity .5s ease .12s, transform .5s ease .12s}
+.mrow:hover .hint-bubble{visibility:visible;opacity:1;transform:translateY(0)}
+
+/* the most-recently surfaced hover popover sits above everything below it */
+.kpis{position:relative;z-index:60}
+.kpi-pop{z-index:80}
+
+/* Home "Attention needed" is project-level: wider box, one size smaller */
+.card.attention.wide{width:auto;max-width:920px}
+.card.attention.wide .mini-title{font-size:13.5px}
+.card.attention.wide .attn-proj{padding:8px 6px}
+.card.attention.wide .nm{font-size:13.5px}
+.card.attention.wide .status-pill,
+.card.attention.wide .count-pill{font-size:11px}
+
+/* ===========================================================================
+   v7: search on the left, clickable hover popovers (no gap), narrower home
+   attention, wider in-project attention, drag-to-status (no css needed)
+   =========================================================================== */
+/* search sits on the left, aligned with the main area; title moves right */
+.topbar-search{width:min(380px,42vw);margin-left:0}
+.topbar-title{margin-left:auto;text-align:right}
+
+/* hover popovers: touch the card (no gap) so the mouse can reach the links */
+.kpi-pop{top:100%}
+.pop-link{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:8px;font-size:13px;
+  color:var(--ink);text-decoration:none;border-top:1px solid var(--line-2)}
+.pop-link:first-of-type{border-top:none}
+.pop-link:hover{background:rgba(122,90,248,.10);color:var(--brand-2)}
+.pop-link .proj-icon{width:22px;height:22px;font-size:13px}
+
+/* Home attention (project-level): narrower */
+.card.attention.home-attn{width:fit-content;max-width:600px;min-width:340px}
+.card.attention.home-attn .mini-title{font-size:13.5px}
+.card.attention.home-attn .attn-proj{padding:7px 6px}
+.card.attention.home-attn .nm{font-size:13.5px}
+.card.attention.home-attn .status-pill,
+.card.attention.home-attn .count-pill{font-size:11px}
+
+/* In-project attention (task-level): ~30% wider than the old fit box */
+.card.attention.inproj{width:auto;max-width:990px}
+
+/* ===========================================================================
+   v8: unified status colours (project = task), four status KPI tints,
+   title placed immediately left of the search
+   =========================================================================== */
+/* project status colours now match task colours: 1 In progress=blue, 3 Completed=green */
+.proj-1{background:rgba(43,127,212,.16);color:#2b7fd4}
+.proj-3{background:rgba(23,153,107,.18);color:#0f7a55}
+
+/* KPI cards tinted by the four statuses */
+.kpi.tint-ns{background:linear-gradient(135deg,rgba(138,136,150,.16),rgba(138,136,150,.05))}
+.kpi.tint-ip{background:linear-gradient(135deg,rgba(43,127,212,.16),rgba(43,127,212,.05))}
+.kpi.tint-de{background:linear-gradient(135deg,rgba(224,57,122,.16),rgba(224,57,122,.05))}
+.kpi.tint-co{background:linear-gradient(135deg,rgba(23,153,107,.18),rgba(23,153,107,.05))}
+
+/* page title sits right after Back, immediately left of the search box */
+.topbar{justify-content:flex-start}
+.topbar-title{margin-left:0;text-align:left;white-space:nowrap}
+
+/* ===========================================================================
+   v9: make every column a reliable drop target (incl. empty columns and the
+   space beneath the last card)
+   =========================================================================== */
+.board-col{display:flex;flex-direction:column}
+.col-body{min-height:70px;flex:1 1 auto}
+.board-col.drop-hint{outline:2px dashed var(--brand-2);outline-offset:-4px}

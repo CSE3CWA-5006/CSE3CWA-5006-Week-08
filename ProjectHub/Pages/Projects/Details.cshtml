@@ -1,0 +1,202 @@
+@page
+@*
+   ProjectHub  -  Copyright (c) 2026 Dr Shuo Ding <shuoding@outlook.com>
+   Licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+   Free to use. Any copy, modification, or distribution must retain this author
+   copyright notice and remain under the AGPL. See the LICENSE file for full terms.
+*@
+@model DetailsModel
+@{
+    ViewData["Title"] = Model.Project.Name;
+    ViewData["Nav"] = "projects";
+    var allUsers = Model.AllUsers;
+    var tasks = Model.Tasks;
+    var hasTasks = tasks.Count > 0;
+    var pct = tasks.Count == 0 ? 0
+        : (int)System.Math.Round(tasks.Count(t => t.Status == WorkStatus.Completed) * 100.0 / tasks.Count);
+}
+
+<div class="proj-head">
+    <div class="proj-head-main">
+        <span class="proj-icon lg">@Model.Project.Icon</span>
+        <div>
+            <h1>@Model.Project.Name
+                <span class="status-pill proj-@((int)Model.Project.Status)">@StatusLabels.Of(Model.Project.Status)</span>
+                <a class="edit-pencil" asp-page="Edit" asp-route-id="@Model.Project.Id" title="Edit project">&#9998;</a>
+            </h1>
+            <div class="proj-sub">
+                @if (Model.Project.StartDate.HasValue) { <span>@Model.Project.StartDate.Value.ToString("MMM d")</span> }
+                @if (Model.Project.EndDate.HasValue) { <span>&rarr; @Model.Project.EndDate.Value.ToString("MMM d, yyyy")</span> }
+                <span>· @tasks.Count tasks · @pct% complete</span>
+            </div>
+        </div>
+    </div>
+    <div class="proj-head-actions">
+        <a class="btn btn-primary" asp-page="AddTask" asp-route-projectId="@Model.Project.Id">+ Add task</a>
+    </div>
+</div>
+
+@if (Model.Members.Count > 0)
+{
+    <div class="member-bar compact">
+        <span class="member-bar-label">Team:</span>
+        @foreach (var m in Model.Members)
+        {
+            <span class="member-chip" title="@m.Title @(string.IsNullOrEmpty(m.Organization) ? "" : "· " + m.Organization)">
+                <span class="avatar xs" style="background:@m.ColorHex">@m.Initials</span>
+                <span>@m.Name</span>
+            </span>
+        }
+    </div>
+}
+
+@if (Model.OverdueTasks.Count > 0)
+{
+    <div class="card attention inproj">
+        <h2 class="mini-title">Attention needed &middot; overdue</h2>
+        @foreach (var t in Model.OverdueTasks)
+        {
+            <div class="attn-row js-edit" data-id="@t.Id">
+                <span class="status-pill rs-over">Delayed</span>
+                <span class="attn-title">@t.Title</span>
+                <span class="attn-meta">Due @t.DueDate.ToString("MMM d")</span>
+                <span class="member-stack">
+                    @foreach (var a in t.Assignees) { <span class="avatar xs" style="background:@a.ColorHex" title="@a.Name">@a.Initials</span> }
+                    @if (t.Assignees.Count == 0) { <span class="muted">Unassigned</span> }
+                </span>
+            </div>
+        }
+    </div>
+}
+
+@if (!hasTasks)
+{
+    <div class="empty-state">
+        <h3>No tasks yet</h3>
+        <p>Add tasks to this project to see the board, Gantt chart and list.</p>
+        <a class="btn btn-primary" asp-page="AddTask" asp-route-projectId="@Model.Project.Id">+ Add tasks</a>
+    </div>
+}
+else
+{
+    <div class="view-tabs">
+        <button class="tab active" data-view="board">Board</button>
+        <button class="tab" data-view="gantt">Gantt</button>
+        <button class="tab" data-view="list">List</button>
+        <button class="tab" data-view="archive">Archive (<span id="archCount">@Model.ArchivedCount</span>)</button>
+    </div>
+
+    <section class="view view-board" data-view="board">
+        <div class="board-toolbar">
+            <label class="group-by">Group by
+                <select id="groupBy">
+                    <option value="status">Status</option>
+                    <option value="assignee">Assignee (bucket)</option>
+                    <option value="priority">Priority</option>
+                </select>
+            </label>
+        </div>
+        <div id="boardRoot" class="board"></div>
+        <script type="application/json" id="boardData">@Html.Raw(Model.BoardJson)</script>
+        <script type="application/json" id="membersData">@Html.Raw(Model.MembersJson)</script>
+    </section>
+
+    <section class="view view-gantt hidden" data-view="gantt">
+        <div class="gantt-toolbar">
+            <div class="zoom">
+                <button data-zoom="day" class="active">Day</button>
+                <button data-zoom="week">Week</button>
+                <button data-zoom="month">Month</button>
+            </div>
+        </div>
+        <div id="ganttRoot" class="gantt"></div>
+    </section>
+
+    <section class="view view-list hidden" data-view="list">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th data-sort="title">Task</th><th data-sort="status">Status</th><th data-sort="priority">Priority</th>
+                    <th>Assignees</th><th data-sort="due">Due</th><th style="text-align:right">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="listBody"></tbody>
+        </table>
+    </section>
+
+    <section class="view view-archive hidden" data-view="archive">
+        <div class="arch-head">
+            <p class="muted">Deleted tasks are kept here. Recover a task, or empty the archive to delete permanently.</p>
+            <button class="btn btn-danger btn-sm" id="emptyArchive">Empty archive</button>
+        </div>
+        <div id="archiveRoot"></div>
+    </section>
+}
+
+<!-- TASK PANEL (edit + create) -->
+<div class="panel-scrim hidden" id="panelScrim"></div>
+<aside class="task-panel hidden" id="taskPanel" aria-label="Task details">
+    <header class="panel-head"><strong id="panelTitle">Task details</strong><button class="icon-btn" id="panelClose" title="Close">&times;</button></header>
+    <div class="panel-body">
+        <input type="hidden" id="f-taskId" />
+        <label class="field"><span>Title</span><input id="f-title" type="text" /></label>
+        <label class="field"><span>Description</span><textarea id="f-desc" rows="3"></textarea></label>
+        <div class="field-row">
+            <label class="field"><span>Status</span>
+                <select id="f-status"><option value="0">Not started</option><option value="1">In progress</option><option value="2">Delayed</option><option value="3">Completed</option></select></label>
+            <label class="field"><span>Priority</span>
+                <select id="f-priority"><option value="0">Low</option><option value="1">Medium</option><option value="2">High</option><option value="3">Urgent</option></select></label>
+        </div>
+        <div class="field-row">
+            <label class="field"><span>Start</span><input id="f-start" type="date" /></label>
+            <label class="field"><span>Due</span><input id="f-due" type="date" /></label>
+        </div>
+        <label class="field"><span>Progress: <b id="f-progress-val">0</b>%</span><input id="f-progress" type="range" min="0" max="100" step="5" /></label>
+        <div class="field"><span>Assignees</span>
+            <div class="assignee-list" id="f-assignees">
+                @foreach (var u in allUsers)
+                {
+                    <label class="achk"><input type="checkbox" value="@u.Id" />
+                        <span class="avatar xs" style="background:@u.ColorHex">@u.Initials</span> @u.Name</label>
+                }
+            </div>
+        </div>
+        <div class="field"><span>Depends on (one or more)</span>
+            <div class="assignee-list" id="f-dependsOn">
+                @if (tasks.Count == 0) { <p class="muted" style="margin:4px 6px">No other tasks yet.</p> }
+                @foreach (var t in tasks)
+                {
+                    <label class="achk" data-id="@t.Id"><input type="checkbox" value="@t.Id" /> @t.Title</label>
+                }
+            </div>
+        </div>
+        <label class="check"><input id="f-milestone" type="checkbox" /> <span>Mark as milestone</span></label>
+        <div class="panel-actions">
+            <button class="btn btn-primary" id="f-save">Save</button>
+            <button class="btn btn-danger" id="f-delete">Delete</button>
+        </div>
+        <hr />
+        <div id="notesWrap">
+            <h3 class="mini-title">Notes</h3>
+            <div id="notesList" class="notes-list"></div>
+            <form id="noteForm" class="note-form"><textarea id="f-note" rows="2" placeholder="Write a note&hellip;"></textarea><button class="btn" type="submit">Add note</button></form>
+        </div>
+    </div>
+</aside>
+
+<div class="modal-scrim hidden" id="confirmScrim">
+    <div class="modal">
+        <h3 id="confirmTitle">Delete task?</h3>
+        <p id="confirmMsg">This action cannot be undone.</p>
+        <div class="modal-actions"><button class="btn" id="confirmCancel">Cancel</button><button class="btn btn-danger" id="confirmOk">Confirm</button></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.PH = { projectId: @Model.Project.Id, openTaskId: @(Model.OpenTaskId?.ToString() ?? "null") };
+    </script>
+    <script src="~/js/ph-core.js" asp-append-version="true"></script>
+    <script src="~/js/ph-board.js" asp-append-version="true"></script>
+    <script src="~/js/ph-gantt.js" asp-append-version="true"></script>
+}

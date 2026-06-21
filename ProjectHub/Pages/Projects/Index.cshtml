@@ -1,0 +1,41 @@
+@page
+@*
+   ProjectHub  -  Copyright (c) 2026 Dr Shuo Ding <shuoding@outlook.com>
+   Licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+   Free to use. Any copy, modification, or distribution must retain this author
+   copyright notice and remain under the AGPL. See the LICENSE file for full terms.
+*@
+@model ProjectHub.Pages.Projects.IndexModel
+@{
+    ViewData["Title"] = "Projects"; ViewData["Nav"] = "projects"; ViewData["Query"] = Model.Q;
+    int Done(Project p) => p.Tasks.Count(t => t.Status == WorkStatus.Completed);
+    int Pct(Project p) => p.Tasks.Count == 0 ? 0 : (int)System.Math.Round(Done(p) * 100.0 / p.Tasks.Count);
+    IEnumerable<AppUser> Team(Project p) => p.Tasks.SelectMany(t => t.Assignees).GroupBy(u => u.Id).Select(g => g.First());
+}
+
+<div class="page-head">
+    <h1>Projects</h1>
+    <a class="btn btn-primary" asp-page="Create">+ New project</a>
+</div>
+
+<div class="project-grid">
+    @foreach (var p in Model.Projects)
+    {
+        <a class="project-card" asp-page="Details" asp-route-id="@p.Id">
+            <div class="project-card-top">
+                <span class="proj-icon">@p.Icon</span>
+                <span class="project-name">@p.Name</span>
+                <span class="status-pill proj-@((int)p.Status)">@StatusLabels.Of(p.Status)</span>
+            </div>
+            <p class="project-desc">@p.Description</p>
+            <div class="progress"><div class="progress-bar" style="width:@(Pct(p))%"></div></div>
+            <div class="project-meta">
+                <span class="member-stack">
+                    @foreach (var m in Team(p).Take(4)) { <span class="avatar sm" style="background:@m.ColorHex" title="@m.Name">@m.Initials</span> }
+                </span>
+                <span>@Done(p)/@p.Tasks.Count tasks · @Pct(p)%</span>
+            </div>
+        </a>
+    }
+    @if (Model.Projects.Count == 0) { <p class="empty">No projects found.</p> }
+</div>

@@ -1,0 +1,30 @@
+@page
+@*
+   ProjectHub  -  Copyright (c) 2026 Dr Shuo Ding <shuoding@outlook.com>
+   Licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+   Free to use. Any copy, modification, or distribution must retain this author
+   copyright notice and remain under the AGPL. See the LICENSE file for full terms.
+*@
+@model CreateModel
+@{ ViewData["Title"] = "Add member"; ViewData["Nav"] = "team"; }
+
+<div class="page-head"><h1>Add member</h1></div>
+
+<form method="post" class="form-card">
+    <div asp-validation-summary="All" class="validation"></div>
+    <label class="field"><span>Full name</span><input asp-for="Member.Name" placeholder="e.g. Wei Chen" /></label>
+    <label class="field"><span>Email</span><input asp-for="Member.Email" type="email" placeholder="name@example.com" /></label>
+    <div class="field-row">
+        <label class="field"><span>Title / position</span><input asp-for="Member.Title" placeholder="e.g. Data Analyst" /></label>
+        <label class="field"><span>Organization / unit</span><input asp-for="Member.Organization" placeholder="e.g. La Trobe University" /></label>
+    </div>
+    <div class="field-row">
+        <label class="field"><span>Role</span>
+            <select asp-for="Member.Role" asp-items="Html.GetEnumSelectList<MemberRole>()"></select></label>
+        <label class="field field-color"><span>Avatar colour</span><input asp-for="Member.ColorHex" type="color" /></label>
+    </div>
+    <div class="form-actions">
+        <a class="btn" asp-page="Index">Cancel</a>
+        <button class="btn btn-primary" type="submit">Add member</button>
+    </div>
+</form>

@@ -1,0 +1,61 @@
+@page
+@*
+   ProjectHub  -  Copyright (c) 2026 Dr Shuo Ding <shuoding@outlook.com>
+   Licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+   Free to use. Any copy, modification, or distribution must retain this author
+   copyright notice and remain under the AGPL. See the LICENSE file for full terms.
+*@
+@model AddTaskModel
+@{
+    ViewData["Title"] = "Add tasks"; ViewData["Nav"] = "projects";
+}
+
+<div class="page-head">
+    <h1>Add tasks &middot; @Model.Project.Name</h1>
+    <a class="btn btn-primary" asp-page="Details" asp-route-id="@Model.Project.Id">Done &rarr; open board</a>
+</div>
+
+@if (Model.JustAdded) { <div class="banner-ok">Task added. Add another below, or open the board when you're done.</div> }
+
+<div class="add-layout">
+    <form method="post" class="form-card">
+        <input type="hidden" asp-for="ProjectId" />
+        <div asp-validation-summary="All" class="validation"></div>
+        <label class="field"><span>Task title</span><input asp-for="Title" placeholder="e.g. Design homepage" /></label>
+        <label class="field"><span>Description</span><textarea asp-for="Description" rows="2"></textarea></label>
+        <div class="field-row">
+            <label class="field"><span>Priority</span>
+                <select asp-for="Priority" asp-items="Html.GetEnumSelectList<Priority>()"></select></label>
+            <label class="check" style="align-self:end;margin-bottom:15px"><input asp-for="IsMilestone" /> <span>Milestone</span></label>
+        </div>
+        <div class="field-row">
+            <label class="field"><span>Start</span><input asp-for="StartDate" type="date" /></label>
+            <label class="field"><span>Due</span><input asp-for="DueDate" type="date" /></label>
+        </div>
+        <div class="field"><span>Assignees</span>
+            <div class="assignee-list">
+                @foreach (var u in Model.Users)
+                {
+                    <label class="achk"><input type="checkbox" name="AssigneeIds" value="@u.Id" />
+                        <span class="avatar sm" style="background:@u.ColorHex">@u.Initials</span> @u.Name</label>
+                }
+            </div>
+        </div>
+        <div class="form-actions"><button class="btn btn-primary" type="submit">Add task</button></div>
+    </form>
+
+    <div class="card">
+        <h2 class="mini-title">Tasks so far (@Model.Added.Count)</h2>
+        @if (Model.Added.Count == 0) { <p class="muted">No tasks yet.</p> }
+        @foreach (var t in Model.Added)
+        {
+            <div class="attn-row">
+                <span class="prio p-@t.Priority.ToString().ToLower()">@t.Priority</span>
+                <span class="attn-title">@t.Title</span>
+                <span class="member-stack">
+                    @foreach (var a in t.Assignees) { <span class="avatar sm" style="background:@a.ColorHex">@a.Initials</span> }
+                </span>
+            </div>
+        }
+    </div>
+</div>

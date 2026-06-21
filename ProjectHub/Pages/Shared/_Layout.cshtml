@@ -1,0 +1,45 @@
+@*
+   ProjectHub  -  Copyright (c) 2026 Dr Shuo Ding <shuoding@outlook.com>
+   Licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+   Free to use. Any copy, modification, or distribution must retain this author
+   copyright notice and remain under the AGPL. See the LICENSE file for full terms.
+*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] · ProjectHub</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+@{ var nav = ViewData["Nav"] as string ?? ""; }
+<body class="@(nav == "home" ? "home-bg" : "")">
+    <div class="app">
+        <nav class="rail">
+            <a class="rail-logo" asp-page="/Index" title="ProjectHub">PH</a>
+            <a class="rail-item @(nav == "home" ? "active" : "")" asp-page="/Index">
+                <span class="rail-glyph">&#8962;</span><span class="rail-label">Home</span></a>
+            <a class="rail-item @(nav == "projects" ? "active" : "")" asp-page="/Projects/Index">
+                <span class="rail-glyph">&#9707;</span><span class="rail-label">Projects</span></a>
+            <a class="rail-item @(nav == "team" ? "active" : "")" asp-page="/Members/Index">
+                <span class="rail-glyph">&#9786;</span><span class="rail-label">Team</span></a>
+        </nav>
+        <div class="main">
+            <header class="topbar">
+                <button class="backbtn" type="button" onclick="history.back()" title="Back" aria-label="Back">&#8592;</button>
+                <div class="topbar-title">@ViewData["Title"]</div>
+                <form class="topbar-search" method="get" asp-page="/Search">
+                    <input type="search" name="q" placeholder="Search projects &amp; people&hellip;"
+                           value="@(ViewData["Query"] as string)" aria-label="Search projects and people" />
+                </form>
+            </header>
+            <main class="content">
+                @RenderBody()
+            </main>
+            <footer class="app-footer">&copy; Shuo Ding 2026 &middot; ProjectHub</footer>
+        </div>
+    </div>
+    @Html.AntiForgeryToken()
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

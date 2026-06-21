@@ -1,0 +1,96 @@
+@page
+@*
+   ProjectHub  -  Copyright (c) 2026 Dr Shuo Ding <shuoding@outlook.com>
+   Licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+   Free to use. Any copy, modification, or distribution must retain this author
+   copyright notice and remain under the AGPL. See the LICENSE file for full terms.
+*@
+@model IndexModel
+@{
+    ViewData["Title"] = "Home"; ViewData["Nav"] = "home";
+    int Done(Project p) => p.Tasks.Count(t => !t.IsArchived && t.Status == WorkStatus.Completed);
+    int Total(Project p) => p.Tasks.Count(t => !t.IsArchived);
+    int Pct(Project p) => Total(p) == 0 ? 0 : (int)System.Math.Round(Done(p) * 100.0 / Total(p));
+    IEnumerable<AppUser> Team(Project p) => p.Tasks.Where(t => !t.IsArchived).SelectMany(t => t.Assignees).GroupBy(u => u.Id).Select(g => g.First());
+
+    var byStatus = Model.Projects.GroupBy(p => p.Status).ToDictionary(g => g.Key, g => g.OrderBy(p => p.Name).ToList());
+    List<Project> S(ProjectStatus s) => byStatus.TryGetValue(s, out var l) ? l : new List<Project>();
+    var notStarted = S(ProjectStatus.NotStarted);
+    var inProgress = S(ProjectStatus.InProgress);
+    var delayed = S(ProjectStatus.Delayed);
+    var completed = S(ProjectStatus.Completed);
+}
+
+<div class="page-head">
+    <h1>Overview</h1>
+    <a class="btn btn-primary" asp-page="/Projects/Create">+ New project</a>
+</div>
+
+<div class="kpis">
+    <div class="kpi tint-ns">
+        <div class="kpi-num">@notStarted.Count</div><div class="kpi-label">Not started</div>
+        <div class="kpi-pop"><b>Not started</b>
+            @if (notStarted.Count == 0) { <span class="muted">None</span> }
+            @foreach (var p in notStarted) { <a class="pop-link" asp-page="/Projects/Details" asp-route-id="@p.Id"><span class="proj-icon">@p.Icon</span> @p.Name</a> }
+        </div>
+    </div>
+    <div class="kpi tint-ip">
+        <div class="kpi-num">@inProgress.Count</div><div class="kpi-label">In progress</div>
+        <div class="kpi-pop"><b>In progress</b>
+            @if (inProgress.Count == 0) { <span class="muted">None</span> }
+            @foreach (var p in inProgress) { <a class="pop-link" asp-page="/Projects/Details" asp-route-id="@p.Id"><span class="proj-icon">@p.Icon</span> @p.Name</a> }
+        </div>
+    </div>
+    <div class="kpi tint-de">
+        <div class="kpi-num">@delayed.Count</div><div class="kpi-label">Delayed</div>
+        <div class="kpi-pop"><b>Delayed</b>
+            @if (delayed.Count == 0) { <span class="muted">None</span> }
+            @foreach (var p in delayed) { <a class="pop-link" asp-page="/Projects/Details" asp-route-id="@p.Id"><span class="proj-icon">@p.Icon</span> @p.Name</a> }
+        </div>
+    </div>
+    <div class="kpi tint-co">
+        <div class="kpi-num">@completed.Count</div><div class="kpi-label">Completed</div>
+        <div class="kpi-pop"><b>Completed</b>
+            @if (completed.Count == 0) { <span class="muted">None</span> }
+            @foreach (var p in completed) { <a class="pop-link" asp-page="/Projects/Details" asp-route-id="@p.Id"><span class="proj-icon">@p.Icon</span> @p.Name</a> }
+        </div>
+    </div>
+</div>
+
+@if (delayed.Count > 0)
+{
+    <div class="card attention home-attn">
+        <h2 class="mini-title">Attention needed &middot; @delayed.Count delayed project(s)</h2>
+        @foreach (var p in delayed)
+        {
+            <a class="attn-proj" asp-page="/Projects/Details" asp-route-id="@p.Id">
+                <span class="proj-icon">@p.Icon</span>
+                <span class="nm">@p.Name</span>
+                <span class="status-pill proj-@((int)p.Status)">@StatusLabels.Of(p.Status)</span>
+            </a>
+        }
+    </div>
+}
+
+<h2 class="section-title">Projects</h2>
+<div class="project-grid">
+    @foreach (var p in Model.Projects)
+    {
+        <a class="project-card" asp-page="/Projects/Details" asp-route-id="@p.Id">
+            <div class="project-card-top">
+                <span class="proj-icon">@p.Icon</span>
+                <span class="project-name">@p.Name</span>
+                <span class="status-pill proj-@((int)p.Status)">@StatusLabels.Of(p.Status)</span>
+            </div>
+            <p class="project-desc">@p.Description</p>
+            <div class="progress"><div class="progress-bar" style="width:@(Pct(p))%"></div></div>
+            <div class="project-meta">
+                <span class="member-stack">
+                    @foreach (var m in Team(p).Take(4)) { <span class="avatar xs" style="background:@m.ColorHex" title="@m.Name">@m.Initials</span> }
+                </span>
+                <span>@Done(p)/@Total(p) tasks · @Pct(p)%</span>
+            </div>
+        </a>
+    }
+    @if (Model.Projects.Count == 0) { <p class="empty">No projects yet. Create one to get started.</p> }
+</div>

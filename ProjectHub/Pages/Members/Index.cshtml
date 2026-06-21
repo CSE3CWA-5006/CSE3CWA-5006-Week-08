@@ -1,0 +1,77 @@
+@page
+@*
+   ProjectHub  -  Copyright (c) 2026 Dr Shuo Ding <shuoding@outlook.com>
+   Licensed under the GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later).
+   Free to use. Any copy, modification, or distribution must retain this author
+   copyright notice and remain under the AGPL. See the LICENSE file for full terms.
+*@
+@model ProjectHub.Pages.Members.IndexModel
+@{
+    ViewData["Title"] = "Team"; ViewData["Nav"] = "team";
+}
+
+<div class="page-head">
+    <h1>Team</h1>
+    <a class="btn btn-primary" asp-page="Create">+ Add member</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr><th>Member</th><th>Title</th><th>Organization</th><th>Role</th><th style="text-align:right">Actions</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model.Users)
+        {
+            var projs = u.Tasks.Where(t => t.Project != null).Select(t => t.Project!)
+                                .GroupBy(p => p.Id).Select(g => g.First()).ToList();
+            <tr class="mrow" data-id="@u.Id">
+                <td class="cell-task"><span class="mname"><span class="avatar lg" style="background:@u.ColorHex">@u.Initials</span> @u.Name<span class="hint-bubble">click to expand</span></span></td>
+                <td>@u.Title</td>
+                <td>@u.Organization</td>
+                <td><span class="role-pill role-@((int)u.Role)">@u.Role</span></td>
+                <td>
+                    <div class="row-actions">
+                        <a class="btn btn-sm" asp-page="Edit" asp-route-id="@u.Id">Edit</a>
+                        <a class="btn btn-sm btn-ghost" asp-page="Delete" asp-route-id="@u.Id">Delete</a>
+                    </div>
+                </td>
+            </tr>
+            <tr class="mdetail hidden" data-detail="@u.Id">
+                <td colspan="5">
+                    <div class="mprofile">
+                        <div class="mprofile-info">
+                            <div><span class="k">Email</span> <a href="mailto:@u.Email">@u.Email</a></div>
+                            <div><span class="k">Title</span> @(string.IsNullOrEmpty(u.Title) ? "—" : u.Title)</div>
+                            <div><span class="k">Organization</span> @(string.IsNullOrEmpty(u.Organization) ? "—" : u.Organization)</div>
+                            <div><span class="k">Role</span> @u.Role</div>
+                        </div>
+                        <div class="mprofile-projects">
+                            <div class="k">Projects (@projs.Count)</div>
+                            @if (projs.Count == 0) { <p class="muted">Not assigned to any tasks yet.</p> }
+                            @foreach (var p in projs)
+                            {
+                                var n = u.Tasks.Count(t => t.ProjectId == p.Id);
+                                <a class="proj-link" asp-page="/Projects/Details" asp-route-id="@p.Id">
+                                    <span class="proj-icon">@p.Icon</span> @p.Name <span class="muted">· @n task(s)</span>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+        @if (Model.Users.Count == 0) { <tr><td colspan="5" class="muted">No members yet.</td></tr> }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.mrow').forEach(function (row) {
+            row.addEventListener('click', function (e) {
+                if (e.target.closest('a,button')) return;          // let action buttons work
+                var d = document.querySelector('.mdetail[data-detail="' + row.dataset.id + '"]');
+                if (d) d.classList.toggle('hidden');
+            });
+        });
+    </script>
+}
