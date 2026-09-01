@@ -1,0 +1,126 @@
+[
+  {
+    "ContainingType": "CarManager.Api.CarsApi\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCarApi\u003Eb__0_0",
+    "RelativePath": "api/cars/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Cars"
+    ]
+  },
+  {
+    "ContainingType": "CarManager.Api.CarsApi\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCarApi\u003Eb__0_2",
+    "RelativePath": "api/cars/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "car",
+        "Type": "CarManager.Models.Car",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Cars"
+    ]
+  },
+  {
+    "ContainingType": "CarManager.Api.CarsApi\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCarApi\u003Eb__0_1",
+    "RelativePath": "api/cars/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Cars"
+    ]
+  },
+  {
+    "ContainingType": "CarManager.Api.CarsApi\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCarApi\u003Eb__0_3",
+    "RelativePath": "api/cars/{id:int}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "updatedCar",
+        "Type": "CarManager.Models.Car",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Cars"
+    ]
+  },
+  {
+    "ContainingType": "CarManager.Api.CarsApi\u002B\u003C\u003Ec",
+    "Method": "\u003CMapCarApi\u003Eb__0_4",
+    "RelativePath": "api/cars/{id:int}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Cars"
+    ]
+  }
+]
